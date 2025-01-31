@@ -1,7 +1,7 @@
 # CGA-graphics-converter
 
 ## 개요
-이미지를 dithering 후 CGA 컬러를 적용함
+이미지를 dithering 후 CGA 컬러를 적용함<br/>
 Dither the image and apply CGA color
 
 ## 사용법
