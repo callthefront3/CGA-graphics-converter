@@ -1,4 +1,4 @@
-from cv2 import imread, imwrite, cvtColor, resize, COLOR_BGR2GRAY
+from cv2 import imread, imwrite, cvtColor, resize, COLOR_BGR2GRAY, INTER_NEAREST
 from os import path, makedirs, listdir
 from math import floor
 from numpy import round
@@ -10,11 +10,18 @@ from numba import jit
     functions :
 
 """
-# image change color
-rgb_b = [0, 0, 0]
-rgb_m = [255, 85, 255]
-rgb_c = [255, 255, 85]
-rgb_w = [255, 255, 255]
+# image change color : CGA
+cga_rgb_b = [0, 0, 0]
+cga_rgb_m = [255, 85, 255]
+cga_rgb_c = [255, 255, 85]
+cga_rgb_w = [255, 255, 255]
+
+# image change color : Sefia
+sefia_rgb_b = [0, 0, 0]
+sefia_rgb_m = [16, 49, 132]
+sefia_rgb_c = [99, 173, 255]
+sefia_rgb_w = [99, 173, 255]
+# sefia_rgb_w = [255, 255, 255]
 
 # image dithering function : Floyd-Steinberg
 @jit(nopython=True)
@@ -62,28 +69,54 @@ def atkinson(image):
     return image * 255
 
 # BGR color to CGA color function
-def rgbToIrgb(bgr) :
+def rgbToCga(bgr) :
     r = floor(bgr[2] / 86) + 1
     g = floor(bgr[1] / 86) + 1
     b = floor(bgr[0] / 86) + 1
     
     if (r==3 and g==3) or (r==2 and g==2 and b==2):
-        return rgb_w
+        return cga_rgb_w
     elif (r+g <= 3) or (r==2 and g==2 and b==1):
-        return rgb_b
+        return cga_rgb_b
     elif (r == 3):
-        return rgb_m
+        return cga_rgb_m
     elif (g == 3) or (r==2 and g==2 and b==3):
-        return rgb_c
+        return cga_rgb_c
     
     print("Error: color out of range " + str(r) + " " + str(g) + " " + str(b))
-    return rgb_b
+    return cga_rgb_b
 
-# image color convert function
+# BGR color to Sefia color function
+def rgbToSefia(bgr) :
+    r = floor(bgr[2] / 86) + 1
+    g = floor(bgr[1] / 86) + 1
+    b = floor(bgr[0] / 86) + 1
+    
+    if (r==3 and g==3) or (r==2 and g==2 and b==2):
+        return sefia_rgb_w
+    elif (r+g <= 3) or (r==2 and g==2 and b==1):
+        return sefia_rgb_b
+    elif (r == 3):
+        return sefia_rgb_m
+    elif (g == 3) or (r==2 and g==2 and b==3):
+        return sefia_rgb_c
+    
+    print("Error: color out of range " + str(r) + " " + str(g) + " " + str(b))
+    return sefia_rgb_b
+
+# image CGA color convert function
 def cga_convert(image):
     for y in range(image.shape[0]) :
         for x in range(image.shape[1]) :
-            image[y, x] = rgbToIrgb(image[y, x])
+            image[y, x] = rgbToCga(image[y, x])
+            
+    return image
+
+# image Sefia color convert function
+def sefia_convert(image):
+    for y in range(image.shape[0]) :
+        for x in range(image.shape[1]) :
+            image[y, x] = rgbToSefia(image[y, x])
             
     return image
 
@@ -96,7 +129,6 @@ def createDirectory(directory):
         print("Error: Failed to create the directory.")
 
 
-
 """
 
     Main code :
@@ -104,22 +136,111 @@ def createDirectory(directory):
 """
 image_list = listdir('origin')
 createDirectory('gray')
+createDirectory('normal')
 createDirectory('cga')
+createDirectory('sefia')
 
 for image_name in image_list:
     print("Converting... " + image_name)
     
     # image load
     origin_image = imread('./origin/' + image_name)
-    
+    origin_image_180 = resize(origin_image, (int(origin_image.shape[1] * 180 / origin_image.shape[0]), 180), interpolation = INTER_NEAREST)
+    origin_image_360 = resize(origin_image, (int(origin_image.shape[1] * 360 / origin_image.shape[0]), 360), interpolation = INTER_NEAREST)
+    origin_image_480 = resize(origin_image, (int(origin_image.shape[1] * 480 / origin_image.shape[0]), 480), interpolation = INTER_NEAREST)
+    origin_image_540 = resize(origin_image, (int(origin_image.shape[1] * 540 / origin_image.shape[0]), 540), interpolation = INTER_NEAREST)
+
     # gray image
     gray_image = cvtColor(origin_image, COLOR_BGR2GRAY)
     gray_image = floyd_steinberg(gray_image)
     imwrite("./gray/" + image_name.split('.')[0] + ".png", gray_image)
 
-    # cga image
+    gray_image_180 = cvtColor(origin_image_180, COLOR_BGR2GRAY)
+    gray_image_180 = floyd_steinberg(gray_image_180)
+    gray_image_180 = resize(gray_image_180, (gray_image_180.shape[1] * 4, gray_image_180.shape[0] * 4), interpolation = INTER_NEAREST)
+    imwrite("./gray/" + image_name.split('.')[0] + "_180.png", gray_image_180)
+
+    gray_image_360 = cvtColor(origin_image_360, COLOR_BGR2GRAY)
+    gray_image_360 = floyd_steinberg(gray_image_360)
+    gray_image_360 = resize(gray_image_360, (gray_image_360.shape[1] * 2, gray_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./gray/" + image_name.split('.')[0] + "_360.png", gray_image_360)
+
+    gray_image_480 = cvtColor(origin_image_480, COLOR_BGR2GRAY)
+    gray_image_480 = floyd_steinberg(gray_image_480)
+    gray_image_480 = resize(gray_image_480, (gray_image_480.shape[1] * 2, gray_image_480.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./gray/" + image_name.split('.')[0] + "_480.png", gray_image_480)
+
+    gray_image_540 = cvtColor(origin_image_540, COLOR_BGR2GRAY)
+    gray_image_540 = floyd_steinberg(gray_image_540)
+    gray_image_540 = resize(gray_image_540, (gray_image_540.shape[1] * 2, gray_image_540.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./gray/" + image_name.split('.')[0] + "_540.png", gray_image_540)
+
+    # Nomal Image
+    nomal_image = atkinson(origin_image)
+    imwrite("./normal/" + image_name.split('.')[0] + ".png", nomal_image)
+
+    nomal_image_180 = atkinson(origin_image_180)
+    nomal_image_180 = resize(nomal_image_180, (nomal_image_180.shape[1] * 4, nomal_image_180.shape[0] * 4), interpolation = INTER_NEAREST)
+    imwrite("./normal/" + image_name.split('.')[0] + "_180.png", nomal_image_180)
+
+    nomal_image_360 = atkinson(origin_image_360)
+    nomal_image_360 = resize(nomal_image_360, (nomal_image_360.shape[1] * 2, nomal_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./normal/" + image_name.split('.')[0] + "_360.png", nomal_image_360)
+
+    nomal_image_480 = atkinson(origin_image_480)
+    nomal_image_480 = resize(nomal_image_480, (nomal_image_480.shape[1] * 2, nomal_image_480.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./normal/" + image_name.split('.')[0] + "_480.png", nomal_image_480)
+
+    nomal_image_540 = atkinson(origin_image_540)
+    nomal_image_540 = resize(nomal_image_540, (nomal_image_540.shape[1] * 2, nomal_image_540.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./normal/" + image_name.split('.')[0] + "_540.png", nomal_image_540)
+
+    # CGA image
     cga_image = atkinson(origin_image)
     cga_image = cga_convert(cga_image)
     imwrite("./cga/" + image_name.split('.')[0] + ".png", cga_image)
 
+    cga_image_180 = atkinson(origin_image_180)
+    cga_image_180 = cga_convert(cga_image_180)
+    cga_image_180 = resize(cga_image_180, (cga_image_180.shape[1] * 4, cga_image_180.shape[0] * 4), interpolation = INTER_NEAREST)
+    imwrite("./cga/" + image_name.split('.')[0] + "_180.png", cga_image_180)
 
+    cga_image_360 = atkinson(origin_image_360)
+    cga_image_360 = cga_convert(cga_image_360)
+    cga_image_360 = resize(cga_image_360, (cga_image_360.shape[1] * 2, cga_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./cga/" + image_name.split('.')[0] + "_360.png", cga_image_360)
+
+    cga_image_480 = atkinson(origin_image_480)
+    cga_image_480 = cga_convert(cga_image_480)
+    cga_image_480 = resize(cga_image_480, (cga_image_480.shape[1] * 2, cga_image_480.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./cga/" + image_name.split('.')[0] + "_480.png", cga_image_480)
+
+    cga_image_540 = atkinson(origin_image_540)
+    cga_image_540 = cga_convert(cga_image_540)
+    cga_image_540 = resize(cga_image_540, (cga_image_540.shape[1] * 2, cga_image_540.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./cga/" + image_name.split('.')[0] + "_540.png", cga_image_540)
+
+    # Sefia image
+    sefia_image = atkinson(origin_image)
+    sefia_image = sefia_convert(sefia_image)
+    imwrite("./sefia/" + image_name.split('.')[0] + ".png", sefia_image)
+
+    sefia_image_180 = atkinson(origin_image_180)
+    sefia_image_180 = sefia_convert(sefia_image_180)
+    sefia_image_180 = resize(sefia_image_180, (sefia_image_180.shape[1] * 4, sefia_image_180.shape[0] * 4), interpolation = INTER_NEAREST)
+    imwrite("./sefia/" + image_name.split('.')[0] + "_180.png", sefia_image_180)
+
+    sefia_image_360 = atkinson(origin_image_360)
+    sefia_image_360 = sefia_convert(sefia_image_360)
+    sefia_image_360 = resize(sefia_image_360, (sefia_image_360.shape[1] * 2, sefia_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./sefia/" + image_name.split('.')[0] + "_360.png", sefia_image_360)
+
+    sefia_image_480 = atkinson(origin_image_480)
+    sefia_image_480 = sefia_convert(sefia_image_480)
+    sefia_image_480 = resize(sefia_image_480, (sefia_image_480.shape[1] * 2, sefia_image_480.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./sefia/" + image_name.split('.')[0] + "_480.png", sefia_image_480)
+
+    sefia_image_540 = atkinson(origin_image_540)
+    sefia_image_540 = sefia_convert(sefia_image_540)
+    sefia_image_540 = resize(sefia_image_540, (sefia_image_540.shape[1] * 2, sefia_image_540.shape[0] * 2), interpolation = INTER_NEAREST)
+    imwrite("./sefia/" + image_name.split('.')[0] + "_540.png", sefia_image_540)
