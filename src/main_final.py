@@ -1,4 +1,4 @@
-from cv2 import imread, imwrite, cvtColor, resize, COLOR_BGR2GRAY, INTER_NEAREST
+from cv2 import imread, imwrite, cvtColor, resize, convertScaleAbs, COLOR_BGR2GRAY, INTER_NEAREST
 from os import path, makedirs, listdir
 from math import floor
 from numpy import round
@@ -11,15 +11,20 @@ from numba import jit
 
 """
 # image change color : CGA
+# cga_rgb_b = [0, 0, 0]
+# cga_rgb_m = [255, 85, 255]
+# cga_rgb_c = [255, 255, 85]
+# cga_rgb_w = [255, 255, 255]
 cga_rgb_b = [0, 0, 0]
-cga_rgb_m = [255, 85, 255]
-cga_rgb_c = [255, 255, 85]
+cga_rgb_m = [100, 56, 255]
+cga_rgb_c = [230, 226, 45]
 cga_rgb_w = [255, 255, 255]
 
 # image change color : Sefia
 sefia_rgb_b = [0, 0, 0]
 sefia_rgb_m = [16, 49, 132]
-sefia_rgb_c = [99, 173, 255]
+sefia_rgb_c = [16, 49, 132]
+# sefia_rgb_c = [99, 173, 255]
 sefia_rgb_w = [99, 173, 255]
 # sefia_rgb_w = [255, 255, 255]
 
@@ -145,6 +150,7 @@ for image_name in image_list:
     
     # image load
     origin_image = imread('./origin/' + image_name)
+    origin_image = convertScaleAbs(origin_image, alpha=1.5, beta=-50)
     origin_image_180 = resize(origin_image, (int(origin_image.shape[1] * 180 / origin_image.shape[0]), 180), interpolation = INTER_NEAREST)
     origin_image_360 = resize(origin_image, (int(origin_image.shape[1] * 360 / origin_image.shape[0]), 360), interpolation = INTER_NEAREST)
     origin_image_480 = resize(origin_image, (int(origin_image.shape[1] * 480 / origin_image.shape[0]), 480), interpolation = INTER_NEAREST)
