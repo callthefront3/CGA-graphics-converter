@@ -169,13 +169,13 @@ for i in range(len(image_list)):
 
     gray_image_240 = cvtColor(origin_image_240, COLOR_BGR2GRAY)
     gray_image_240 = floyd_steinberg(gray_image_240)
-    gray_image_240 = resize(gray_image_240, (gray_image_240.shape[1] * 2, gray_image_240.shape[0] * 2), interpolation = INTER_NEAREST)
+    gray_image_240 = resize(gray_image_240, (gray_image_240.shape[1] * 3, gray_image_240.shape[0] * 3), interpolation = INTER_NEAREST)
     imwrite("./gray/" + image_name.split('.')[0] + "_240.png", gray_image_240)
 
-    gray_image_360 = cvtColor(origin_image_360, COLOR_BGR2GRAY)
-    gray_image_360 = floyd_steinberg(gray_image_360)
-    gray_image_360 = resize(gray_image_360, (gray_image_360.shape[1] * 2, gray_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
-    imwrite("./gray/" + image_name.split('.')[0] + "_360.png", gray_image_360)
+    # gray_image_360 = cvtColor(origin_image_360, COLOR_BGR2GRAY)
+    # gray_image_360 = floyd_steinberg(gray_image_360)
+    # gray_image_360 = resize(gray_image_360, (gray_image_360.shape[1] * 2, gray_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    # imwrite("./gray/" + image_name.split('.')[0] + "_360.png", gray_image_360)
 
     # gray_image_540 = cvtColor(origin_image_540, COLOR_BGR2GRAY)
     # gray_image_540 = floyd_steinberg(gray_image_540)
@@ -191,12 +191,12 @@ for i in range(len(image_list)):
     imwrite("./normal/" + image_name.split('.')[0] + "_180.png", nomal_image_180)
 
     nomal_image_240 = atkinson(origin_image_240)
-    nomal_image_240 = resize(nomal_image_240, (nomal_image_240.shape[1] * 2, nomal_image_240.shape[0] * 2), interpolation = INTER_NEAREST)
+    nomal_image_240 = resize(nomal_image_240, (nomal_image_240.shape[1] * 3, nomal_image_240.shape[0] * 3), interpolation = INTER_NEAREST)
     imwrite("./normal/" + image_name.split('.')[0] + "_240.png", nomal_image_240)
 
-    nomal_image_360 = atkinson(origin_image_360)
-    nomal_image_360 = resize(nomal_image_360, (nomal_image_360.shape[1] * 2, nomal_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
-    imwrite("./normal/" + image_name.split('.')[0] + "_360.png", nomal_image_360)
+    # nomal_image_360 = atkinson(origin_image_360)
+    # nomal_image_360 = resize(nomal_image_360, (nomal_image_360.shape[1] * 2, nomal_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    # imwrite("./normal/" + image_name.split('.')[0] + "_360.png", nomal_image_360)
 
     # nomal_image_540 = atkinson(origin_image_540)
     # nomal_image_540 = resize(nomal_image_540, (nomal_image_540.shape[1] * 2, nomal_image_540.shape[0] * 2), interpolation = INTER_NEAREST)
@@ -214,13 +214,13 @@ for i in range(len(image_list)):
 
     cga_image_240 = atkinson(origin_image_240)
     cga_image_240 = cga_convert(cga_image_240)
-    cga_image_240 = resize(cga_image_240, (cga_image_240.shape[1] * 2, cga_image_240.shape[0] * 2), interpolation = INTER_NEAREST)
+    cga_image_240 = resize(cga_image_240, (cga_image_240.shape[1] * 3, cga_image_240.shape[0] * 3), interpolation = INTER_NEAREST)
     imwrite("./cga/" + image_name.split('.')[0] + "_240.png", cga_image_240)
 
-    cga_image_360 = atkinson(origin_image_360)
-    cga_image_360 = cga_convert(cga_image_360)
-    cga_image_360 = resize(cga_image_360, (cga_image_360.shape[1] * 2, cga_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
-    imwrite("./cga/" + image_name.split('.')[0] + "_360.png", cga_image_360)
+    # cga_image_360 = atkinson(origin_image_360)
+    # cga_image_360 = cga_convert(cga_image_360)
+    # cga_image_360 = resize(cga_image_360, (cga_image_360.shape[1] * 2, cga_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    # imwrite("./cga/" + image_name.split('.')[0] + "_360.png", cga_image_360)
 
     # cga_image_540 = atkinson(origin_image_540)
     # cga_image_540 = cga_convert(cga_image_540)
@@ -239,13 +239,13 @@ for i in range(len(image_list)):
 
     sefia_image_240 = atkinson(origin_image_240)
     sefia_image_240 = sefia_convert(sefia_image_240)
-    sefia_image_240 = resize(sefia_image_240, (sefia_image_240.shape[1] * 2, sefia_image_240.shape[0] * 2), interpolation = INTER_NEAREST)
+    sefia_image_240 = resize(sefia_image_240, (sefia_image_240.shape[1] * 3, sefia_image_240.shape[0] * 3), interpolation = INTER_NEAREST)
     imwrite("./sefia/" + image_name.split('.')[0] + "_240.png", sefia_image_240)
 
-    sefia_image_360 = atkinson(origin_image_360)
-    sefia_image_360 = sefia_convert(sefia_image_360)
-    sefia_image_360 = resize(sefia_image_360, (sefia_image_360.shape[1] * 2, sefia_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
-    imwrite("./sefia/" + image_name.split('.')[0] + "_360.png", sefia_image_360)
+    # sefia_image_360 = atkinson(origin_image_360)
+    # sefia_image_360 = sefia_convert(sefia_image_360)
+    # sefia_image_360 = resize(sefia_image_360, (sefia_image_360.shape[1] * 2, sefia_image_360.shape[0] * 2), interpolation = INTER_NEAREST)
+    # imwrite("./sefia/" + image_name.split('.')[0] + "_360.png", sefia_image_360)
 
     # sefia_image_540 = atkinson(origin_image_540)
     # sefia_image_540 = sefia_convert(sefia_image_540)
