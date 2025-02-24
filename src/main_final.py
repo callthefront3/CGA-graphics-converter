@@ -145,8 +145,9 @@ createDirectory('normal')
 createDirectory('cga')
 createDirectory('sefia')
 
-for image_name in image_list:
-    print("Converting... " + image_name)
+for i in range(len(image_list)):
+    image_name = image_list[i]
+    print("Converting " + str(int(i / len(image_list) * 100)) + "%... " + image_name)
     
     # image load
     origin_image = imread('./origin/' + image_name)
