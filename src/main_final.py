@@ -100,9 +100,9 @@ def rgbToCga_strong(bgr) :
         return cga_rgb_w
     elif (r+g <= 70):
         return cga_rgb_b
-    elif (r + 10 > g):
+    elif (r > g):
         return cga_rgb_m
-    elif (r + 10 <= g):
+    elif (r <= g):
         return cga_rgb_c
     
     print("Error: color out of range " + str(r) + " " + str(g) + " " + str(b))
