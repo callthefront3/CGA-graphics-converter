@@ -1,0 +1,75 @@
+<style>
+  img {
+    max-height: 400px;
+  }
+
+  canvas {
+    image-rendering: pixelated;
+    max-height: 400px;
+    height: auto;
+    width: auto;
+  }
+</style>
+
+  <img id="source-img" src="/lost_century/image-120.png" crossorigin="anonymous" />
+  <canvas id="pixel-canvas"></canvas>
+
+  <script>
+  const img = document.getElementById('source-img');
+  const canvas = document.getElementById('pixel-canvas');
+  const ctx = canvas.getContext('2d');
+
+  img.onload = () => {
+    const width = img.naturalWidth;
+    const height = img.naturalHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    canvas.style.height = "400px";
+    canvas.style.width = (width / height * 400) + "px";
+
+    ctx.drawImage(img, 0, 0);
+    
+    let imageData = ctx.getImageData(0, 0, width, height);
+    let originalData = new Uint8ClampedArray(imageData.data);
+
+    function applyNoise() {
+      imageData.data.set(originalData);
+
+      const blockSize = 20;
+      const numBlocks = 300;
+
+      for (let i = 0; i < numBlocks; i++) {
+        const x = Math.floor(Math.random() * (width / blockSize)) * blockSize;
+        const y = Math.floor(Math.random() * (height / blockSize)) * blockSize;
+
+        const dx = (Math.floor(Math.random() * 3) - 1) * blockSize;
+        const dy = (Math.floor(Math.random() * 3) - 1) * blockSize;
+
+        const nx = Math.min(width - blockSize, Math.max(0, x + dx));
+        const ny = Math.min(height - blockSize, Math.max(0, y + dy));
+
+        // 블록 색상 복사
+        for (let py = 0; py < blockSize; py++) {
+          for (let px = 0; px < blockSize; px++) {
+            const destIndex = ((y + py) * width + (x + px)) * 4;
+            const srcIndex = ((ny + py) * width + (nx + px)) * 4;
+
+            imageData.data[destIndex + 0] = originalData[srcIndex + 0];
+            imageData.data[destIndex + 1] = originalData[srcIndex + 1];
+            imageData.data[destIndex + 2] = originalData[srcIndex + 2];
+            imageData.data[destIndex + 3] = originalData[srcIndex + 3]; // 알파도 복사
+          }
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    }
+
+
+    // setInterval(applyNoise, 2000);
+    window.addEventListener('mousemove', (event) => {
+      applyNoise();
+    });
+  };
+</script>
