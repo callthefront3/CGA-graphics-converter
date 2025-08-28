@@ -11,7 +11,7 @@
   }
 </style>
 
-  <img id="source-img" src="/lost_century/image-120.png" crossorigin="anonymous" />
+  <img id="source-img" src="/sefia/asdf (5).png" crossorigin="anonymous" />
   <canvas id="pixel-canvas"></canvas>
 
   <script>
@@ -37,7 +37,7 @@
       imageData.data.set(originalData);
 
       const blockSize = 20;
-      const numBlocks = 300;
+      const numBlocks = 100;
 
       for (let i = 0; i < numBlocks; i++) {
         const x = Math.floor(Math.random() * (width / blockSize)) * blockSize;
@@ -67,9 +67,18 @@
     }
 
 
-    // setInterval(applyNoise, 2000);
-    window.addEventListener('mousemove', (event) => {
-      applyNoise();
-    });
+    // setInterval(applyNoise, Math.floor(Math.random() * 2000));
+
+    (function loop() {
+        var rand = Math.round(Math.random() * (2000 - 500)) + 500;
+        setTimeout(function() {
+                applyNoise();
+                loop();  
+        }, rand);
+    }());
+
+    // window.addEventListener('mousemove', (event) => {
+    //   applyNoise();
+    // });
   };
 </script>

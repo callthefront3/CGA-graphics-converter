@@ -6,6 +6,11 @@ from numba import jit
 """
     functions :
 """
+palette_gray = [
+    (0, 0, 0),
+    (255, 255, 255),
+]
+
 palette_cga = [
     (0, 0, 0),
     (255, 56, 100),
@@ -185,7 +190,7 @@ for i in range(len(image_list)):
     # contrast_img = cv2.cvtColor(lab_clahe, cv2.COLOR_LAB2BGR)
     
     # 2. 대비 조작
-    contrast_img = cv2.convertScaleAbs(origin_image, alpha=1.0, beta=0)
+    contrast_img = cv2.convertScaleAbs(origin_image, alpha=1.5, beta=-50)
 
     # 3. 이미지 크기 축소
     # contrast_img_small = cv2.resize(contrast_img, (int(contrast_img.shape[1] * 128 / contrast_img.shape[0]), 128), interpolation = cv2.INTER_NEAREST)
@@ -193,6 +198,12 @@ for i in range(len(image_list)):
     
     # Atkinson 적용
     contrast_img_small = atkinson(contrast_img_small)
+
+    # cga
+    createDirectory('gray')
+    new_image = apply_palette(contrast_img_small, palette_gray)
+    new_image = cv2.resize(new_image, (new_image.shape[1] * 10, new_image.shape[0] * 10), interpolation = cv2.INTER_NEAREST)
+    cv2.imwrite("./gray/" + image_name.split('.')[0] + ".png", new_image)
     
     # cga
     createDirectory('cga')
